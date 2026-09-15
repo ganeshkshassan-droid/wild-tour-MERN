@@ -1,0 +1,11 @@
+{
+  "name": "wildtour-mern-monorepo",
+  "version": "1.0.0",
+  "description": "Wild Tour Karnataka MERN Stack Root Workspace",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "npm --prefix server start",
+    "client": "npm --prefix client run build",
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build"
+  }
+}
