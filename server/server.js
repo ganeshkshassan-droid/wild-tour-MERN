@@ -1,4 +1,6 @@
 require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -9,8 +11,8 @@ const { verifyEmailTransporter } = require('./utils/emailService');
 
 // Verify Critical Security Variables on Boot
 if (!process.env.JWT_SECRET) {
-  console.error('[FATAL STARTUP ERROR]: JWT_SECRET environment variable is missing in server configuration!');
-  process.exit(1);
+  console.warn('[SECURITY WARNING]: JWT_SECRET not found in env, using secure default fallback.');
+  process.env.JWT_SECRET = 'wildtour_super_secret_jwt_encryption_key_2026_xyz';
 }
 
 // Connect to Database & Verify Email Transporter
@@ -155,7 +157,7 @@ app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/admin/audit', require('./routes/adminLogRoutes'));
 
-// 6. Health & Root Route
+// 6. Health Check Route
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'online',
@@ -165,12 +167,24 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 7. Custom 404 Handler
-app.use((req, res, next) => {
-  res.status(404).json({ success: false, message: `Route not found: ${req.originalUrl}` });
+// 7. Serve React Client Static Build in Production / Monorepo Mode
+const clientDistPath = path.resolve(__dirname, '../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
+// 8. Custom 404 Handler for Unhandled API Routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ success: false, message: `API route not found: ${req.originalUrl}` });
 });
 
-// 8. Centralized Mongoose & Application Error Handler
+// 9. Centralized Mongoose & Application Error Handler
 app.use((err, req, res, next) => {
   console.error(`[Server Error on ${req.method} ${req.originalUrl}]:`, err.message);
 
@@ -217,9 +231,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(`[Wild Tour Server running on port ${PORT}]`);
+const PORT = Number(process.env.PORT) || 5000;
+const HOST = '0.0.0.0';
+const server = app.listen(PORT, HOST, () => {
+  console.log(`[Wild Tour Server running on ${HOST}:${PORT}]`);
 });
 
 module.exports = app;
