@@ -55,6 +55,7 @@ app.use(
           "'self'",
           'https://accounts.google.com',
           'https://oauth2.googleapis.com',
+          'https://*.onrender.com',
           'http://localhost:5000',
           'http://localhost:5173',
           ...rawFrontendUrls,
@@ -77,6 +78,7 @@ app.use(
       const normalizedOrigin = origin.replace(/\/+$/, '');
       const isAllowed =
         allowedOrigins.includes(normalizedOrigin) ||
+        normalizedOrigin.endsWith('.onrender.com') ||
         process.env.NODE_ENV === 'development' ||
         allowedOrigins.includes('*');
 
