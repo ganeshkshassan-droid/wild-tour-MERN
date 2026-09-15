@@ -1,5 +1,14 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const dns = require('dns');
+
+// Configure reliable DNS servers to resolve MongoDB Atlas SRV records
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {
+  // Fail-soft if custom DNS cannot be configured
+}
+
 const User = require('../models/User');
 const Safari = require('../models/Safari');
 const Stay = require('../models/Stay');
