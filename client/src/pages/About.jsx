@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollReveal from '../components/ScrollReveal';
 import { Compass, ShieldCheck, TreePine, Award, Users, MapPin } from 'lucide-react';
 
 const About = () => {
@@ -16,7 +17,7 @@ const About = () => {
       </div>
 
       {/* Hero Visual Card */}
-      <div className="about-hero-card white-card mb-5">
+      <ScrollReveal className="about-hero-card white-card mb-5">
         <div className="about-hero-img-wrap">
           <img
             src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1200&q=80"
@@ -34,10 +35,10 @@ const About = () => {
             We follow strict ethical guidelines: limiting vehicles per track, adhering to speed limits, avoiding plastic waste, and promoting eco-sensitive lodge accommodations.
           </p>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* 3 Core Values Grid */}
-      <div className="values-grid">
+      <ScrollReveal className="values-grid stagger-group">
         <div className="white-card value-card">
           <div className="value-icon"><TreePine size={26} className="text-forest-primary" /></div>
           <h3 className="card-title">Low-Impact Tourism</h3>
@@ -61,7 +62,7 @@ const About = () => {
             All 4x4 open-top safaris and catamaran boat cruises adhere strictly to forest reception carrying capacities and timings.
           </p>
         </div>
-      </div>
+      </ScrollReveal>
 
       <style>{`
         .about-hero-card {

@@ -1,12 +1,20 @@
 import React from 'react';
-import { Volume2, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, ArrowRight } from 'lucide-react';
 
-const WildlifeCard = ({ animal, onSelect, onPlaySound }) => {
+const WildlifeCard = ({ animal, onSelect }) => {
+  const imgSrc = animal.image_url || animal.image || '/images/tiger.jpg';
+
   return (
     <div className="white-card wildlife-card">
       <div className="card-media-wrap">
         <img
-          src={animal.image_url || animal.image || 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=800&q=80'}
+          src={imgSrc}
+          alt=""
+          aria-hidden="true"
+          className="card-media-backdrop"
+        />
+        <img
+          src={imgSrc}
           alt={animal.name}
           className="card-media-img"
           loading="lazy"
@@ -31,30 +39,53 @@ const WildlifeCard = ({ animal, onSelect, onPlaySound }) => {
         </div>
 
         <div className="card-footer-row">
-          {(animal.sound || animal.sound_name) ? (
-            <button
-              onClick={() => onPlaySound(animal.sound || animal.sound_name)}
-              className="btn-ghost btn-sm"
-              title="Play alarm call audio"
-            >
-              <Volume2 size={16} className="text-forest-primary" />
-              <span>Alarm Call</span>
-            </button>
-          ) : (
-            <div />
-          )}
-
           <button
             onClick={() => onSelect(animal)}
             className="btn-secondary btn-sm"
+            style={{ width: '100%', justifyContent: 'center' }}
           >
-            <span>Learn More</span>
+            <span>Learn More & Species Intel</span>
             <ArrowRight size={14} />
           </button>
         </div>
       </div>
 
       <style>{`
+        .wildlife-card .card-media-wrap {
+          position: relative;
+          width: 100%;
+          height: 300px;
+          padding-top: 0;
+          background: #071911;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .wildlife-card .card-media-backdrop {
+          position: absolute;
+          inset: -20px;
+          width: calc(100% + 40px);
+          height: calc(100% + 40px);
+          object-fit: cover;
+          filter: blur(20px) brightness(0.35);
+          transform: scale(1.1);
+          pointer-events: none;
+        }
+        .wildlife-card .card-media-img {
+          position: relative;
+          top: auto;
+          left: auto;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          object-position: center;
+          z-index: 1;
+          transition: transform 0.4s ease;
+        }
+        .wildlife-card:hover .card-media-img {
+          transform: scale(1.02);
+        }
         .scientific-name {
           font-size: 0.85rem;
           font-style: italic;

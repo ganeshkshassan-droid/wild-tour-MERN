@@ -8,6 +8,8 @@ import { WishlistProvider } from './context/WishlistContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
+import ScrollToTop from './components/ScrollToTop';
+import PageTransition from './components/PageTransition';
 
 // Pages
 import Home from './pages/Home';
@@ -20,6 +22,7 @@ import PhotographyGuide from './pages/PhotographyGuide';
 import MyTrips from './pages/MyTrips';
 import BoardingPass from './pages/BoardingPass';
 import SavedExperiences from './pages/SavedExperiences';
+import BookingPage from './pages/BookingPage';
 import Profile from './pages/Profile';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -76,73 +79,81 @@ function App() {
         <AuthProvider>
           <WishlistProvider>
             <Router>
+              <ScrollToTop />
               <div className="app-layout">
                 <Navbar />
                 <main className="app-main-content">
-                  <Routes>
-                    {/* Public & Visitor Routes */}
-                    <Route path="/" element={<Home />} />
-                    <Route path="/safaris" element={<Safaris />} />
-                    <Route path="/stays" element={<Stays />} />
-                    <Route path="/packages" element={<Packages />} />
-                    <Route path="/guides" element={<Guides />} />
-                    <Route path="/wildlife" element={<WildlifeSightings />} />
-                    <Route path="/photography" element={<PhotographyGuide />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
+                  <PageTransition>
+                    <Routes>
+                      {/* Public & Visitor Routes */}
+                      <Route path="/" element={<Home />} />
+                      <Route path="/safaris" element={<Safaris />} />
+                      <Route path="/stays" element={<Stays />} />
+                      <Route path="/packages" element={<Packages />} />
+                      <Route path="/guides" element={<Guides />} />
+                      <Route path="/wildlife" element={<WildlifeSightings />} />
+                      <Route path="/photography" element={<PhotographyGuide />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/contact" element={<Contact />} />
 
-                    {/* Authentication Routes */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/verify-otp" element={<VerifyOTP />} />
-                    <Route path="/verify-email" element={<VerifyEmailLink />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
+                      {/* Dedicated Booking Routes */}
+                      <Route path="/booking/:type/:id" element={<BookingPage />} />
+                      <Route path="/booking/:id" element={<BookingPage />} />
+                      <Route path="/book/:type/:id" element={<BookingPage />} />
 
-                    {/* User Protected Routes */}
-                    <Route path="/my-trips" element={<MyTrips />} />
-                    <Route path="/trips" element={<MyTrips />} />
-                    <Route path="/boarding-pass/:bookingId" element={<BoardingPass />} />
-                    <Route path="/saved" element={<SavedExperiences />} />
-                    <Route path="/wishlist" element={<SavedExperiences />} />
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute>
-                          <Profile />
-                        </ProtectedRoute>
-                      }
-                    />
+                      {/* Authentication Routes */}
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<Signup />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/verify-otp" element={<VerifyOTP />} />
+                      <Route path="/verify-email" element={<VerifyEmailLink />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
 
-                    {/* Admin Protected Routes */}
-                    <Route
-                      path="/admin"
-                      element={
-                        <AdminRoute>
-                          <AdminDashboard />
-                        </AdminRoute>
-                      }
-                    />
-                    <Route
-                      path="/admin/trips"
-                      element={
-                        <AdminRoute>
-                          <AdminTripManagement />
-                        </AdminRoute>
-                      }
-                    />
-                    <Route
-                      path="/admin/checkpost"
-                      element={
-                        <AdminRoute>
-                          <AdminCheckpost />
-                        </AdminRoute>
-                      }
-                    />
+                      {/* User Protected Routes */}
+                      <Route path="/my-trips" element={<MyTrips />} />
+                      <Route path="/trips" element={<MyTrips />} />
+                      <Route path="/boarding-pass/:bookingId" element={<BoardingPass />} />
+                      <Route path="/saved" element={<SavedExperiences />} />
+                      <Route path="/wishlist" element={<SavedExperiences />} />
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute>
+                            <Profile />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    {/* Fallback to Home */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
+                      {/* Admin Protected Routes */}
+                      <Route
+                        path="/admin"
+                        element={
+                          <AdminRoute>
+                            <AdminDashboard />
+                          </AdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/trips"
+                        element={
+                          <AdminRoute>
+                            <AdminTripManagement />
+                          </AdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/checkpost"
+                        element={
+                          <AdminRoute>
+                            <AdminCheckpost />
+                          </AdminRoute>
+                        }
+                      />
+
+                      {/* Fallback to Home */}
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </PageTransition>
                 </main>
                 <Footer />
               </div>

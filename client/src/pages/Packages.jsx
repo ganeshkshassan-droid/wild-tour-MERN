@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import BookingModal from '../components/BookingModal';
 import PackageCard from '../components/PackageCard';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ScrollReveal from '../components/ScrollReveal';
 import { Layers, Calendar, CheckCircle2 } from 'lucide-react';
 
 const Packages = () => {
+  const navigate = useNavigate();
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Booking Modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPkg, setSelectedPkg] = useState(null);
 
   useEffect(() => {
     fetchPackages();
@@ -31,8 +29,9 @@ const Packages = () => {
   };
 
   const handleBook = (pkg) => {
-    setSelectedPkg(pkg);
-    setModalOpen(true);
+    navigate(`/booking/Package/${pkg._id || pkg.id}`, {
+      state: { item: pkg, itemType: 'Package' },
+    });
   };
 
   return (
@@ -51,7 +50,7 @@ const Packages = () => {
       {loading ? (
         <SkeletonLoader count={3} />
       ) : (
-        <div className="cards-grid">
+        <ScrollReveal className="cards-grid stagger-group">
           {packages.map((pkg) => (
             <PackageCard
               key={pkg._id || pkg.id}
@@ -59,16 +58,8 @@ const Packages = () => {
               onBook={handleBook}
             />
           ))}
-        </div>
+        </ScrollReveal>
       )}
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        item={selectedPkg}
-        itemType="Package"
-      />
 
       <style>{`
         .cards-grid {

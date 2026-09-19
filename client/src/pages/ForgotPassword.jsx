@@ -51,42 +51,42 @@ const ForgotPassword = () => {
       {/* Scenic Nature Background Overlay */}
       <div className="auth-dark-overlay" />
 
-      {/* Ambient Lighting Orbs */}
+      {/* Ambient Lighting Glow Orbs */}
       <div className="ambient-orb orb-top-left" />
       <div className="ambient-orb orb-bottom-right" />
 
-      <div className="container auth-shell-container section-padding">
+      <div className="container auth-shell-container">
         <div className="compact-glass-card animate-glass-enter">
           {/* Top Gold Eyebrow Tag */}
           <div className="card-top-tag text-center">
             <span className="gold-eyebrow-tag">
               <Sparkles size={13} className="text-gold" />
-              <span>ACCOUNT SECURITY</span>
+              <span>ACCOUNT RECOVERY</span>
             </span>
           </div>
 
           {submittedSuccess ? (
             /* Success State */
             <div className="success-glass-content text-center animate-fade-in">
-              <div className="success-icon-badge">
-                <Inbox size={32} className="text-forest-primary" />
+              <div className="brand-hero-badge success-badge">
+                <Inbox size={28} className="badge-icon" />
               </div>
-              <h1 className="glass-card-title">Check your inbox</h1>
+              <h1 className="glass-card-title">Check Your Inbox</h1>
               <p className="glass-card-subtitle">
-                If an account exists for <strong className="text-forest-dark">{email}</strong>, you will receive a secure 6-digit verification code.
+                A 6-digit security verification code has been dispatched to <strong className="email-strong-highlight">{email}</strong>
               </p>
 
-              <div className="success-action-group mt-4">
+              <div className="success-action-group">
                 <button
                   type="button"
                   onClick={handleProceedToOtp}
-                  className="btn-primary w-full btn-lg glass-submit-btn"
+                  className="glass-submit-btn"
                 >
                   <span>Enter 6-Digit OTP Code</span>
                   <ArrowRight size={18} />
                 </button>
 
-                <Link to="/login" className="back-signin-btn mt-3">
+                <Link to="/login" className="back-signin-btn">
                   Back to Sign In
                 </Link>
               </div>
@@ -95,20 +95,20 @@ const ForgotPassword = () => {
             /* Default / Form State */
             <>
               <div className="glass-card-header text-center">
-                <div className="brand-compass-badge">
-                  <KeyRound size={24} className="text-forest-primary" />
+                <div className="brand-hero-badge">
+                  <KeyRound size={26} className="badge-icon" />
                 </div>
-                <h1 className="glass-card-title">Forgot your password?</h1>
+                <h1 className="glass-card-title">Forgot Password?</h1>
                 <p className="glass-card-subtitle">
-                  No worries. Enter your registered email and we'll send you a secure verification code to reset it.
+                  Enter your registered email address and we'll send you a secure verification code to reset your password.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="glass-auth-form">
-                <div className="compact-form-group">
-                  <label className="compact-label">Email Address</label>
+                <div className="form-field-wrapper">
+                  <label className="field-label">Registered Email Address</label>
                   <div className="glass-input-box">
-                    <Mail size={16} className="glass-input-icon" />
+                    <Mail size={18} className="glass-input-icon" />
                     <input
                       type="email"
                       name="email"
@@ -125,10 +125,10 @@ const ForgotPassword = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn-primary w-full btn-lg mt-4 glass-submit-btn"
+                  className="glass-submit-btn"
                 >
-                  <span>{loading ? 'Dispatching Instructions...' : 'Send Reset Code'}</span>
-                  <ArrowRight size={18} />
+                  <span>{loading ? 'Dispatching Code...' : 'Send Reset Code'}</span>
+                  {!loading && <ArrowRight size={18} />}
                 </button>
               </form>
 
@@ -152,39 +152,40 @@ const ForgotPassword = () => {
           align-items: center;
           justify-content: center;
           background: url('https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2200&q=85') center/cover no-repeat fixed;
-          padding: 2.5rem 1rem;
+          padding: 3rem 1.25rem;
           overflow: hidden;
         }
 
         .auth-dark-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, rgba(8, 26, 17, 0.76) 0%, rgba(4, 15, 9, 0.85) 100%);
-          backdrop-filter: blur(1px);
+          background: linear-gradient(135deg, rgba(8, 26, 17, 0.78) 0%, rgba(4, 15, 9, 0.88) 100%);
+          backdrop-filter: blur(2px);
         }
 
+        /* Ambient Lighting Orbs */
         .ambient-orb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(80px);
+          filter: blur(90px);
           pointer-events: none;
           z-index: 1;
         }
 
         .orb-top-left {
-          width: 360px;
-          height: 360px;
-          background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(16, 185, 129, 0) 70%);
-          top: 12%;
-          left: 25%;
+          width: 420px;
+          height: 420px;
+          background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(16, 185, 129, 0) 70%);
+          top: 10%;
+          left: 20%;
         }
 
         .orb-bottom-right {
-          width: 380px;
-          height: 380px;
-          background: radial-gradient(circle, rgba(217, 119, 6, 0.22) 0%, rgba(217, 119, 6, 0) 70%);
-          bottom: 8%;
-          right: 25%;
+          width: 440px;
+          height: 440px;
+          background: radial-gradient(circle, rgba(217, 119, 6, 0.28) 0%, rgba(217, 119, 6, 0) 70%);
+          bottom: 6%;
+          right: 20%;
         }
 
         .auth-shell-container {
@@ -192,22 +193,25 @@ const ForgotPassword = () => {
           z-index: 2;
           display: flex;
           justify-content: center;
+          align-items: center;
           width: 100%;
+          max-width: 1200px;
         }
 
+        /* Luxury Glass Card */
         .compact-glass-card {
           width: 100%;
-          max-width: 450px;
-          background: rgba(255, 255, 255, 0.78);
-          backdrop-filter: blur(24px) saturate(180%);
-          -webkit-backdrop-filter: blur(24px) saturate(180%);
-          border: 1px solid rgba(255, 255, 255, 0.75);
+          max-width: 460px;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(28px) saturate(200%);
+          -webkit-backdrop-filter: blur(28px) saturate(200%);
+          border: 1px solid rgba(255, 255, 255, 0.85);
           border-radius: 24px;
           box-shadow:
-            inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
-            0 25px 60px -12px rgba(5, 20, 12, 0.38),
-            0 12px 24px -10px rgba(0, 0, 0, 0.2);
-          padding: 2.2rem 2.4rem;
+            inset 0 1px 2px rgba(255, 255, 255, 0.95),
+            0 24px 64px -12px rgba(0, 0, 0, 0.45),
+            0 12px 28px -8px rgba(27, 67, 50, 0.2);
+          padding: 2.5rem 2.2rem;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -218,7 +222,7 @@ const ForgotPassword = () => {
         @keyframes glassCardEnter {
           from {
             opacity: 0;
-            transform: translateY(14px) scale(0.98);
+            transform: translateY(16px) scale(0.98);
           }
           to {
             opacity: 1;
@@ -226,188 +230,229 @@ const ForgotPassword = () => {
           }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-          .animate-glass-enter {
-            animation: none;
-          }
-        }
-
         .card-top-tag {
-          margin-bottom: 0.85rem;
+          margin-bottom: 1.2rem;
         }
 
         .gold-eyebrow-tag {
           display: inline-flex;
           align-items: center;
-          gap: 0.3rem;
-          font-size: 0.72rem;
+          gap: 0.35rem;
+          font-size: 0.74rem;
           font-weight: 800;
           color: #92400e;
           letter-spacing: 0.08em;
-          background: rgba(254, 243, 199, 0.8);
-          padding: 0.25rem 0.65rem;
+          background: rgba(254, 243, 199, 0.9);
+          padding: 0.3rem 0.8rem;
           border-radius: 20px;
-          border: 1px solid rgba(251, 191, 36, 0.45);
+          border: 1px solid rgba(251, 191, 36, 0.55);
+          box-shadow: 0 2px 6px rgba(217, 119, 6, 0.1);
         }
 
-        .brand-compass-badge,
-        .success-icon-badge {
-          width: 48px;
-          height: 48px;
-          border-radius: 14px;
-          background: rgba(240, 253, 244, 0.85);
-          border: 1px solid rgba(187, 247, 208, 0.6);
+        /* Hero Badges */
+        .brand-hero-badge {
+          width: 56px;
+          height: 56px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 0.6rem auto;
-          box-shadow: 0 4px 10px rgba(27, 67, 50, 0.08);
+          margin: 0 auto 1.1rem auto;
+          box-shadow: 0 8px 20px rgba(27, 67, 50, 0.28);
+          border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .brand-hero-badge.success-badge {
+          background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+          box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-icon {
+          color: #ffffff;
         }
 
         .glass-card-title {
-          font-size: 1.55rem;
-          color: var(--text-heading);
+          font-size: 1.65rem;
+          color: #0f291e;
           font-weight: 800;
           letter-spacing: -0.02em;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.4rem;
+          line-height: 1.25;
         }
 
         .glass-card-subtitle {
-          font-size: 0.84rem;
-          color: var(--text-secondary);
-          line-height: 1.45;
-          margin-bottom: 1.2rem;
+          font-size: 0.88rem;
+          color: #475569;
+          line-height: 1.55;
+          margin-bottom: 1.8rem;
         }
 
+        .email-strong-highlight {
+          color: #1b4332;
+          font-weight: 700;
+          word-break: break-all;
+        }
+
+        /* Form Layout */
         .glass-auth-form {
           display: flex;
           flex-direction: column;
         }
 
-        .compact-form-group {
+        .form-field-wrapper {
           display: flex;
           flex-direction: column;
-          gap: 0.3rem;
+          gap: 0.45rem;
+          margin-bottom: 1.5rem; /* Generous gap to separate input from button completely */
         }
 
-        .compact-label {
-          font-size: 0.76rem;
+        .field-label {
+          font-size: 0.8rem;
           font-weight: 700;
-          color: var(--text-heading);
-          letter-spacing: 0.01em;
+          color: #1e293b;
+          letter-spacing: 0.02em;
+          text-align: left;
         }
 
         .glass-input-box {
           position: relative;
           display: flex;
           align-items: center;
-          background: rgba(255, 255, 255, 0.85);
-          border: 1px solid rgba(203, 213, 225, 0.8);
-          border-radius: 10px;
-          transition: all 0.2s ease;
+          width: 100%;
+          height: 52px;
+          background: #ffffff;
+          border: 1.5px solid #cbd5e1;
+          border-radius: 12px;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
           overflow: hidden;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         .glass-input-box:focus-within {
-          background: #ffffff;
-          border-color: var(--forest-primary);
-          box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+          border-color: #1b4332;
+          box-shadow: 0 0 0 4px rgba(27, 67, 50, 0.14);
         }
 
         .glass-input-icon {
           position: absolute;
-          left: 0.75rem;
+          left: 14px;
           color: #64748b;
           pointer-events: none;
         }
 
         .glass-input {
           width: 100%;
-          padding: 0.65rem 0.75rem 0.65rem 2.3rem;
-          font-size: 0.85rem;
+          height: 100%;
+          padding: 0 16px 0 44px;
+          font-size: 0.92rem;
+          font-weight: 500;
           border: none;
           background: transparent;
-          color: var(--text-heading);
+          color: #0f172a;
           outline: none;
           font-family: inherit;
         }
 
         .glass-input::placeholder {
           color: #94a3b8;
-          font-size: 0.82rem;
+          font-size: 0.88rem;
         }
 
+        /* Submit Button (Guaranteed separated styling) */
         .glass-submit-btn {
-          box-shadow: 0 4px 14px rgba(27, 67, 50, 0.3);
+          width: 100%;
+          height: 52px;
+          background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+          color: #ffffff;
+          border: none;
           border-radius: 12px;
-          padding: 0.75rem 1.4rem;
-          display: inline-flex;
+          font-size: 0.96rem;
+          font-weight: 700;
+          font-family: inherit;
+          display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.5rem;
-          font-weight: 700;
-          transition: all 0.2s ease;
+          gap: 10px;
+          cursor: pointer;
+          box-shadow: 0 6px 18px rgba(27, 67, 50, 0.32);
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .glass-submit-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(27, 67, 50, 0.4);
+          background: linear-gradient(135deg, #143527 0%, #245841 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(27, 67, 50, 0.42);
         }
 
         .glass-submit-btn:active:not(:disabled) {
           transform: translateY(0);
         }
 
+        .glass-submit-btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        /* Success Actions */
+        .success-action-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+        }
+
         .back-signin-btn {
-          display: block;
-          color: var(--forest-primary);
-          font-size: 0.86rem;
+          display: inline-block;
+          color: #1b4332;
+          font-size: 0.88rem;
           font-weight: 700;
           text-decoration: none;
-          padding: 0.5rem;
+          padding: 0.4rem;
           transition: color 0.15s ease;
         }
 
         .back-signin-btn:hover {
-          color: var(--forest-dark);
+          color: #0f291e;
           text-decoration: underline;
         }
 
+        /* Account Switch Footer */
         .glass-account-switch {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.45rem;
-          margin-top: 1.3rem;
-          padding-top: 0.9rem;
-          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          gap: 0.5rem;
+          margin-top: 1.6rem;
+          padding-top: 1.1rem;
+          border-top: 1px solid rgba(203, 213, 225, 0.8);
         }
 
         .switch-text {
-          color: var(--text-secondary);
-          font-size: 0.86rem;
+          color: #64748b;
+          font-size: 0.88rem;
+          font-weight: 500;
         }
 
         .switch-link {
-          color: var(--forest-primary);
+          color: #1b4332;
           font-weight: 700;
-          font-size: 0.86rem;
+          font-size: 0.88rem;
           text-decoration: none;
           transition: color 0.15s ease;
         }
 
         .switch-link:hover {
-          color: var(--forest-dark);
+          color: #0f291e;
           text-decoration: underline;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 520px) {
           .compact-glass-card {
-            padding: 1.8rem 1.4rem;
-            border-radius: 18px;
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
           }
           .glass-card-title {
-            font-size: 1.4rem;
+            font-size: 1.45rem;
           }
         }
       `}</style>

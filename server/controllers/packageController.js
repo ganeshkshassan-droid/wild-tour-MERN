@@ -8,7 +8,8 @@ exports.getPackages = async (req, res) => {
     let query = { active: true };
 
     if (search) {
-      query.name = { $regex: search, $options: 'i' };
+      const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      query.name = { $regex: escaped, $options: 'i' };
     }
 
     const packages = await Package.find(query).sort({ price: -1 });

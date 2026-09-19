@@ -130,28 +130,20 @@ const Signup = () => {
     }
   };
 
-  const handleCustomGoogleClick = async () => {
+  const handleCustomGoogleClick = () => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId || clientId.includes('dummy') || clientId.includes('your_google')) {
+      showToast('Google OAuth requires a Google Client ID in your .env file.', 'warning');
+      return;
+    }
     if (window.google?.accounts?.id) {
-      window.google.accounts.id.prompt();
-    } else {
-      setGoogleLoading(true);
-      try {
-        const res = await loginWithGoogle({
-          profile: {
-            name: formData.name || 'Wildlife Explorer',
-            email: formData.email || `explorer_${Date.now().toString().slice(-4)}@gmail.com`,
-            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-            googleId: `google_${Date.now()}`,
-          },
-        });
-        if (res.success) {
-          navigate('/safaris');
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.warn('[Google GSI]: One-tap prompt not displayed:', notification.getNotDisplayedReason?.());
         }
-      } catch (err) {
-        showToast('Google sign-in could not be completed', 'error');
-      } finally {
-        setGoogleLoading(false);
-      }
+      });
+    } else {
+      showToast('Google Identity services are loading or blocked by browser extensions.', 'warning');
     }
   };
 

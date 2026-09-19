@@ -129,8 +129,9 @@ const speciesData = [
     tagline: 'The Sovereign Apex Predator of Indian Jungles',
     status: 'Endangered (IUCN)',
     population_note: 'Karnataka is home to one of the largest wild tiger populations on Earth.',
-    image: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=1200&q=80',
+    image: '/images/tiger.jpg',
     gallery: [
+      '/images/tiger.jpg',
       'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1575550959106-5a7defe28b56?auto=format&fit=crop&w=800&q=80'
     ],

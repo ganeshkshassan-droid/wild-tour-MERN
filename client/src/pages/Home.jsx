@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import BookingModal from '../components/BookingModal';
-import SafariCard from '../components/SafariCard';
-import StayCard from '../components/StayCard';
-import PackageCard from '../components/PackageCard';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ScrollReveal from '../components/ScrollReveal';
 import {
   Search,
   Calendar,
@@ -46,29 +43,14 @@ const Home = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItemType, setSelectedItemType] = useState('Safari');
 
-  // Horizontal Scroll Ref for Stays Shelf & Spotlight Scroll Reveal
+  // Horizontal Scroll Ref for Stays Shelf
   const staysScrollRef = useRef(null);
-  const spotlightRef = useRef(null);
-  const [spotlightVisible, setSpotlightVisible] = useState(false);
 
   useEffect(() => {
     fetchHomeData();
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     setSearchDate(tomorrow.toISOString().split('T')[0]);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setSpotlightVisible(true);
-        }
-      },
-      { threshold: 0.12 }
-    );
-    if (spotlightRef.current) {
-      observer.observe(spotlightRef.current);
-    }
-    return () => observer.disconnect();
   }, []);
 
   const fetchHomeData = async () => {
@@ -112,8 +94,6 @@ const Home = () => {
       });
     }
   };
-
-  const signatureSafari = safaris.length > 0 ? safaris[0] : null;
 
   return (
     <div className="home-page-root">
@@ -207,84 +187,102 @@ const Home = () => {
                 </button>
               </div>
             </form>
+
+            {/* Live Sanctuary Telemetry & Sighting Odds Ticker */}
+            <div className="hero-telemetry-strip">
+              <div className="telemetry-live-badge">
+                <span className="live-pulse-dot" />
+                <span>LIVE DISPATCH</span>
+              </div>
+              <div className="telemetry-scroll-wrapper">
+                <Link to="/wildlife" className="telemetry-chip">
+                  <span className="chip-emoji">🐆</span>
+                  <span><strong>Saya (Black Panther):</strong> Sighted in Zone B Teak Canopy</span>
+                </Link>
+                <Link to="/safaris" className="telemetry-chip">
+                  <span className="chip-emoji">🐅</span>
+                  <span><strong>Bengal Tiger:</strong> 88% Sighting Probability in Zone A</span>
+                </Link>
+                <Link to="/stays" className="telemetry-chip">
+                  <span className="chip-emoji">🐘</span>
+                  <span><strong>Kabini Backwaters:</strong> 42+ Wild Elephants at Sunset</span>
+                </Link>
+                <Link to="/safaris" className="telemetry-chip highlight">
+                  <span className="chip-emoji">🎟️</span>
+                  <span><strong>Permit Quotas:</strong> 6 Open Gypsy Seats Remaining</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. SIGNATURE SAFARI SPOTLIGHT (SLEEK COMPACT SCROLL-REVEAL CARD) */}
-      {signatureSafari && (
-        <section className="container section-padding pb-2">
-          <div
-            ref={spotlightRef}
-            className={`spotlight-asymmetric-card ${spotlightVisible ? 'spotlight-scrolled-in' : ''}`}
-          >
-            <div className="spotlight-media-side">
-              <img
-                src={signatureSafari.image_url || '/images/jeep-safari-lion.jpg'}
-                alt={signatureSafari.name}
-                className="spotlight-media-img"
-              />
-              <div className="spotlight-media-overlay" />
-              <span className="card-tag-pill gold-glow">FEATURED JEEP EXPEDITION</span>
+      {/* 2. QUICK SANCTUARY EXPLORER (INTERACTIVE EXPERIENCE MATRIX) */}
+      <ScrollReveal as="section" className="container section-padding-sm pb-2">
+        <div className="section-header text-left mb-4">
+          <span className="section-eyebrow">
+            <Sparkles size={15} />
+            <span>INSTANT SANCTUARY DISCOVERY</span>
+          </span>
+          <h2 className="section-title text-2xl">Featured Sanctuary Expeditions</h2>
+          <p className="section-subtitle">
+            Direct access to official Nagarhole core safaris, wildlife radar, and waterfront lodges.
+          </p>
+        </div>
+
+        <div className="quick-explorer-grid stagger-group">
+          <div className="quick-exp-card" onClick={() => navigate('/safaris')}>
+            <div className="exp-icon-circle bg-forest">
+              <Compass size={22} className="text-forest-primary" />
             </div>
-
-            <div className="spotlight-content-side">
-              <div className="spotlight-badge-row">
-                <span className="section-eyebrow mb-0">
-                  <Sparkles size={14} />
-                  <span>SIGNATURE JEEP SAFARI</span>
-                </span>
-                <span className="sighting-pill">
-                  <Star size={13} className="text-gold-primary fill-gold" />
-                  <span>{signatureSafari.sighting_rating || 4.95} / 5.0</span>
-                </span>
-              </div>
-
-              <h2 className="spotlight-title">{signatureSafari.name}</h2>
-              <p className="spotlight-desc">
-                {signatureSafari.description ||
-                  'High-clearance 4x4 open safari gypsies escorted by certified naturalists through Nagarhole’s legendary predator corridors.'}
-              </p>
-
-              <div className="spotlight-pills-row">
-                <div className="spotlight-pill">
-                  <Clock size={14} className="text-forest-primary" />
-                  <span>{signatureSafari.duration || '3.5 Hours'}</span>
-                </div>
-                <div className="spotlight-pill">
-                  <MapPin size={14} className="text-forest-primary" />
-                  <span>{signatureSafari.vehicle_type || 'Custom 4x4 Open Gypsy'}</span>
-                </div>
-                <div className="spotlight-pill">
-                  <Users size={14} className="text-forest-primary" />
-                  <span>Max 6 Seats</span>
-                </div>
-              </div>
-
-              <div className="spotlight-cta-row">
-                <div className="price-box">
-                  <span className="price-label">Tariff per seat</span>
-                  <span className="price-amount text-xl font-bold">
-                    ₹{(signatureSafari.price_per_seat || 1850).toLocaleString()}
-                    <span className="price-sub text-xs text-muted"> + 5% Levy</span>
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => handleOpenBooking(signatureSafari, 'Safari')}
-                  className="btn-primary btn-md spotlight-book-btn"
-                >
-                  <span>Book Jeep Safari</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
+            <div className="exp-info">
+              <h3 className="exp-title">4x4 Open Gypsy Safari</h3>
+              <p className="exp-desc">Core Zone A & B Dawn Predator Corridors</p>
+              <span className="exp-link">Book Permits →</span>
             </div>
+            <span className="exp-badge">88% Tiger Odds</span>
           </div>
-        </section>
-      )}
+
+          <div className="quick-exp-card" onClick={() => navigate('/wildlife')}>
+            <div className="exp-icon-circle bg-gold">
+              <TreePine size={22} className="text-gold-primary" />
+            </div>
+            <div className="exp-info">
+              <h3 className="exp-title">Black Panther & Wildlife Radar</h3>
+              <p className="exp-desc">Real-time sighting tracking & species guide</p>
+              <span className="exp-link">Live Radar →</span>
+            </div>
+            <span className="exp-badge gold">Saya Tracking</span>
+          </div>
+
+          <div className="quick-exp-card" onClick={() => navigate('/stays')}>
+            <div className="exp-icon-circle bg-sky">
+              <Hotel size={22} className="text-sky-blue" />
+            </div>
+            <div className="exp-info">
+              <h3 className="exp-title">Waterfront Lodges & Stays</h3>
+              <p className="exp-desc">Colonial bungalows along Kabini backwaters</p>
+              <span className="exp-link">View Lodges →</span>
+            </div>
+            <span className="exp-badge">Verified Luxury</span>
+          </div>
+
+          <div className="quick-exp-card" onClick={() => navigate('/packages')}>
+            <div className="exp-icon-circle bg-forest">
+              <Layers size={22} className="text-forest-primary" />
+            </div>
+            <div className="exp-info">
+              <h3 className="exp-title">All-Inclusive Tour Packages</h3>
+              <p className="exp-desc">Lodge Stay + 4 Safaris + Certified Guide</p>
+              <span className="exp-link">Explore Itineraries →</span>
+            </div>
+            <span className="exp-badge">Complete Trips</span>
+          </div>
+        </div>
+      </ScrollReveal>
 
       {/* 3. HORIZONTAL DISCOVERY SHELF: WATERFRONT STAYS & LODGES */}
-      <section className="horizontal-shelf-section section-padding">
+      <ScrollReveal as="section" className="horizontal-shelf-section section-padding">
         <div className="container">
           <div className="shelf-header-row">
             <div>
@@ -333,10 +331,10 @@ const Home = () => {
             </div>
           )}
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* 4. BLACK PANTHER EDITORIAL SPOTLIGHT ("MELANISTIC LEOPARD") */}
-      <section className="container section-padding">
+      <ScrollReveal as="section" className="container section-padding">
         <div className="panther-editorial-card">
           <div className="panther-img-wrap">
             <img
@@ -382,10 +380,10 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* 5. ALL-INCLUSIVE SIGNATURE EXPEDITIONS (TIMELINE LAYOUT) */}
-      <section className="container section-padding">
+      <ScrollReveal as="section" className="container section-padding">
         <div className="section-header">
           <span className="section-eyebrow">
             <Layers size={16} />
@@ -400,7 +398,7 @@ const Home = () => {
         {loading ? (
           <SkeletonLoader count={2} />
         ) : (
-          <div className="packages-timeline-grid">
+          <div className="packages-timeline-grid stagger-group">
             {packages.slice(0, 2).map((pkg) => (
               <div key={pkg._id || pkg.id} className="white-card package-timeline-card">
                 <div className="package-timeline-header">
@@ -463,10 +461,10 @@ const Home = () => {
             ))}
           </div>
         )}
-      </section>
+      </ScrollReveal>
 
       {/* 6. HOW BOOKING WORKS (4-STEP FRICTIONLESS JOURNEY) */}
-      <section className="how-it-works-section section-padding">
+      <ScrollReveal as="section" className="how-it-works-section section-padding">
         <div className="container">
           <div className="section-header">
             <span className="section-eyebrow">
@@ -479,7 +477,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="steps-cards-grid">
+          <div className="steps-cards-grid stagger-group">
             <div className="step-item-card">
               <span className="step-num-pill">01</span>
               <h3 className="step-card-title">Choose Experience</h3>
@@ -513,11 +511,11 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* 7. TRUST & CONSERVATION PILLARS */}
-      <section className="container section-padding">
-        <div className="trust-pillars-grid">
+      <ScrollReveal as="section" className="container section-padding">
+        <div className="trust-pillars-grid stagger-group">
           <div className="trust-pillar-item">
             <div className="trust-icon-box">
               <TreePine size={24} className="text-forest-primary" />
@@ -548,10 +546,10 @@ const Home = () => {
             </p>
           </div>
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* 8. FINAL CALL TO ADVENTURE */}
-      <section className="container mb-5">
+      <ScrollReveal as="section" className="container mb-5">
         <div className="final-cta-banner">
           <div className="final-cta-content text-center">
             <h2 className="final-cta-title">Ready for Your Nagarhole Expedition?</h2>
@@ -569,15 +567,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        item={selectedItem}
-        itemType={selectedItemType}
-      />
+      </ScrollReveal>
 
       <style>{`
         /* Hero */
@@ -701,148 +691,186 @@ const Home = () => {
           height: 48px;
           white-space: nowrap;
         }
-        /* Spotlight Asymmetric - Compact & Scroll Reveal */
-        .spotlight-asymmetric-card {
-          display: grid;
-          grid-template-columns: 1fr 1.15fr;
-          background: #ffffff;
-          border: 1px solid var(--border-subtle);
-          border-radius: 20px;
-          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
-          overflow: hidden;
-          opacity: 0;
-          transform: translateY(35px) scale(0.98);
-          transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-          max-height: 380px;
+        /* Live Telemetry Ticker Strip */
+        .hero-telemetry-strip {
+          margin-top: 1.25rem;
+          padding-top: 1.1rem;
+          border-top: 1px dashed var(--border-light);
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          overflow-x: auto;
+          scrollbar-width: none;
         }
-        .spotlight-asymmetric-card.spotlight-scrolled-in {
-          opacity: 1;
-          transform: translateY(0) scale(1);
+        .hero-telemetry-strip::-webkit-scrollbar {
+          display: none;
         }
-        .spotlight-asymmetric-card:hover {
-          box-shadow: 0 20px 48px rgba(15, 41, 30, 0.12);
-        }
-        .spotlight-media-side {
-          position: relative;
-          height: 100%;
-          min-height: 320px;
-          overflow: hidden;
-        }
-        .spotlight-media-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .spotlight-asymmetric-card:hover .spotlight-media-img {
-          transform: scale(1.06);
-        }
-        .spotlight-media-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
-          pointer-events: none;
-        }
-        .card-tag-pill.gold-glow {
-          position: absolute;
-          top: 1rem;
-          left: 1rem;
-          background: rgba(15, 41, 30, 0.85);
-          color: #fef08a;
-          border: 1px solid rgba(250, 204, 21, 0.4);
-          backdrop-filter: blur(8px);
+        .telemetry-live-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          background: #ecfdf5;
+          color: #065f46;
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          padding: 0.3rem 0.75rem;
+          border-radius: var(--radius-full);
           font-size: 0.72rem;
-          font-weight: 700;
-          padding: 0.35rem 0.85rem;
-          border-radius: 999px;
-          letter-spacing: 0.06em;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-        }
-        .spotlight-content-side {
-          padding: 2rem 2.2rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          background: #ffffff;
-        }
-        .spotlight-badge-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 0.4rem;
-        }
-        .sighting-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          background: #fef9c3;
-          color: #854d0e;
-          font-size: 0.78rem;
-          font-weight: 700;
-          padding: 0.25rem 0.65rem;
-          border-radius: 999px;
-          border: 1px solid rgba(234, 179, 8, 0.3);
-        }
-        .spotlight-title {
-          font-size: 1.65rem;
           font-weight: 800;
-          color: var(--text-heading);
-          line-height: 1.25;
-          margin-bottom: 0.4rem;
+          letter-spacing: 0.06em;
+          white-space: nowrap;
+          flex-shrink: 0;
         }
-        .spotlight-desc {
-          color: var(--text-secondary);
-          font-size: 0.92rem;
-          line-height: 1.5;
-          margin-bottom: 1rem;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        .live-pulse-dot {
+          width: 8px;
+          height: 8px;
+          background: #10b981;
+          border-radius: 50%;
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+          animation: pulseGreen 1.8s infinite;
         }
-        .spotlight-pills-row {
+        @keyframes pulseGreen {
+          0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+          }
+          70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+          }
+          100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+          }
+        }
+        .telemetry-scroll-wrapper {
           display: flex;
-          flex-wrap: wrap;
-          gap: 0.6rem;
-          margin-bottom: 1.2rem;
-          padding-bottom: 1rem;
-          border-bottom: 1px solid var(--border-light);
+          align-items: center;
+          gap: 0.85rem;
+          white-space: nowrap;
         }
-        .spotlight-pill {
+        .telemetry-chip {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
+          gap: 0.45rem;
           background: var(--bg-surface-subtle);
           border: 1px solid var(--border-light);
-          padding: 0.35rem 0.75rem;
-          border-radius: 8px;
+          padding: 0.35rem 0.85rem;
+          border-radius: var(--radius-full);
           font-size: 0.82rem;
-          font-weight: 600;
           color: var(--text-secondary);
+          text-decoration: none;
+          transition: all 0.25s ease;
+          flex-shrink: 0;
         }
-        .spotlight-cta-row {
+        .telemetry-chip:hover {
+          background: #f0fdf4;
+          border-color: var(--forest-primary);
+          color: var(--forest-primary);
+          transform: translateY(-1px);
+        }
+        .telemetry-chip.highlight {
+          background: #fffbeb;
+          border-color: #fde68a;
+          color: #92400e;
+        }
+        .telemetry-chip.highlight:hover {
+          background: #fef3c7;
+          border-color: var(--gold-primary);
+        }
+        .chip-emoji {
+          font-size: 0.95rem;
+        }
+
+        /* Quick Sanctuary Explorer Grid */
+        .quick-explorer-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1.25rem;
+          margin-top: 1.5rem;
+        }
+        .quick-exp-card {
+          position: relative;
+          background: #ffffff;
+          border: 1px solid var(--border-light);
+          border-radius: var(--radius-lg);
+          padding: 1.4rem 1.2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        .quick-exp-card:hover {
+          transform: translateY(-4px);
+          border-color: var(--forest-light);
+          box-shadow: 0 12px 28px rgba(15, 41, 30, 0.08);
+        }
+        .exp-icon-circle {
+          width: 46px;
+          height: 46px;
+          border-radius: var(--radius-md);
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          gap: 1rem;
+          justify-content: center;
         }
-        .spotlight-book-btn {
-          height: 42px;
-          padding: 0 1.35rem;
-          font-size: 0.92rem;
+        .exp-icon-circle.bg-forest {
+          background: var(--forest-subtle);
         }
-        @media (max-width: 900px) {
-          .spotlight-asymmetric-card {
-            grid-template-columns: 1fr;
-            max-height: none;
-          }
-          .spotlight-media-side {
-            min-height: 240px;
-          }
-          .spotlight-content-side {
-            padding: 1.5rem;
-          }
+        .exp-icon-circle.bg-gold {
+          background: var(--gold-subtle);
         }
+        .exp-icon-circle.bg-sky {
+          background: var(--sky-subtle);
+        }
+        .exp-badge {
+          position: absolute;
+          top: 1.2rem;
+          right: 1.2rem;
+          font-size: 0.7rem;
+          font-weight: 700;
+          background: var(--bg-surface-subtle);
+          color: var(--forest-primary);
+          border: 1px solid var(--border-light);
+          padding: 0.2rem 0.55rem;
+          border-radius: var(--radius-full);
+          letter-spacing: 0.02em;
+        }
+        .exp-badge.gold {
+          background: #fffbeb;
+          color: #b45309;
+          border-color: #fde68a;
+        }
+        .exp-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+        .exp-title {
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: var(--text-heading);
+          line-height: 1.3;
+        }
+        .exp-desc {
+          font-size: 0.82rem;
+          color: var(--text-secondary);
+          line-height: 1.45;
+        }
+        .exp-link {
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: var(--forest-primary);
+          margin-top: 0.5rem;
+          display: inline-flex;
+          align-items: center;
+          transition: transform 0.2s ease;
+        }
+        .quick-exp-card:hover .exp-link {
+          transform: translateX(3px);
+          color: var(--gold-dark);
+        }
+
         /* Horizontal Shelf */
         .horizontal-shelf-section {
           background-color: var(--bg-surface-subtle);
@@ -892,7 +920,7 @@ const Home = () => {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          object-position: center 25%;
+          object-position: center 15%;
         }
         .panther-content-wrap {
           padding: 3.5rem 3rem;
@@ -1106,7 +1134,7 @@ const Home = () => {
         @media (max-width: 1024px) {
           .hero-title { font-size: 2.8rem; }
           .search-form-grid { grid-template-columns: 1fr 1fr; }
-          .spotlight-asymmetric-card { grid-template-columns: 1fr; }
+          .quick-explorer-grid { grid-template-columns: 1fr 1fr; }
           .panther-editorial-card { grid-template-columns: 1fr; }
           .panther-img-wrap { min-height: 320px; }
           .packages-timeline-grid { grid-template-columns: 1fr; }
@@ -1116,6 +1144,7 @@ const Home = () => {
         @media (max-width: 768px) {
           .hero-title { font-size: 2.2rem; }
           .search-form-grid { grid-template-columns: 1fr; }
+          .quick-explorer-grid { grid-template-columns: 1fr; }
           .panther-content-wrap { padding: 2rem 1.4rem; }
           .panther-actions { flex-direction: column; align-items: stretch; }
           .shelf-card-wrapper { min-width: 290px; }

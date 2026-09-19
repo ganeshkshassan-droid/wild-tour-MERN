@@ -9,10 +9,25 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const { verifyEmailTransporter } = require('./utils/emailService');
 
-// Verify Critical Security Variables on Boot
+// ============================================================================
+// CRITICAL PRODUCTION ENVIRONMENT AUDIT & VALIDATION
+// ============================================================================
+const isProduction = process.env.NODE_ENV === 'production';
+
+// 1. JWT_SECRET Validation
 if (!process.env.JWT_SECRET) {
-  console.warn('[SECURITY WARNING]: JWT_SECRET not found in env, using secure default fallback.');
-  process.env.JWT_SECRET = 'wildtour_super_secret_jwt_encryption_key_2026_xyz';
+  if (isProduction) {
+    console.error(
+      '\n[FATAL STARTUP ERROR]: JWT_SECRET environment variable is missing in server configuration!\n' +
+      'Action Required: Please navigate to your Render Dashboard -> Service Settings -> Environment -> Add Environment Variable:\n' +
+      '  Key: JWT_SECRET\n' +
+      '  Value: <your-secure-random-256-bit-string>\n'
+    );
+    process.exit(1);
+  } else {
+    console.warn('[SECURITY NOTICE]: JWT_SECRET not found in env; generating secure runtime development secret.');
+    process.env.JWT_SECRET = require('crypto').randomBytes(32).toString('hex');
+  }
 }
 
 // Connect to Database & Verify Email Transporter
@@ -20,6 +35,9 @@ connectDB();
 verifyEmailTransporter();
 
 const app = express();
+
+// Trust reverse proxy (Essential for correct IP resolution on Render, Heroku, AWS)
+app.set('trust proxy', 1);
 
 // 1. Production HTTP Security Headers (Helmet with Custom CSP)
 const rawFrontendUrls = (process.env.FRONTEND_URL || '')
@@ -136,7 +154,18 @@ const otpResendLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Apply Rate Limiters to Specific Auth Endpoints
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10, // Max 10 contact messages per 15 minutes per IP
+  message: {
+    success: false,
+    message: 'Too many contact submissions from your network. Please try again later.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply Rate Limiters to Specific Auth & Public Endpoints
 app.use('/api/auth/login', generalAuthLimiter);
 app.use('/api/auth/register', generalAuthLimiter);
 app.use('/api/auth/verify-otp', otpVerifyLimiter);
@@ -145,6 +174,7 @@ app.use('/api/auth/verify-reset-otp', otpVerifyLimiter);
 app.use('/api/auth/forgot-password', otpResendLimiter);
 app.use('/api/auth/resend-otp', otpResendLimiter);
 app.use('/api/auth/resend-verification-link', otpResendLimiter);
+app.use('/api/contact', contactLimiter);
 
 // 5. Routes Mounting
 app.use('/api/auth', require('./routes/authRoutes'));

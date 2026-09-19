@@ -7,7 +7,7 @@ try {
 } catch (e) {}
 
 const LOCAL_URI = 'mongodb://localhost:27017/wildtour_db';
-const ATLAS_URI = process.env.ATLAS_URI || 'mongodb+srv://ganeshrc544_db_user:uCW8MeM8vCnL8sHi@cluster0.3uaskzq.mongodb.net/wildtour_db?retryWrites=true&w=majority&appName=Cluster0';
+const ATLAS_URI = process.env.ATLAS_URI || 'mongodb+srv://ganeshrc544_db_user:Ganesh21@cluster0.3uaskzq.mongodb.net/wildtour_db?retryWrites=true&w=majority&appName=Cluster0';
 
 async function migrateData() {
   console.log('🚀 Starting Data Migration: Local MongoDB -> MongoDB Atlas...\n');

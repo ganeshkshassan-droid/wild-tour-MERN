@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import ScrollReveal from '../components/ScrollReveal';
 import { Mail, Phone, MapPin, Send, Clock, ChevronDown } from 'lucide-react';
 
 const Contact = () => {
@@ -73,7 +74,7 @@ const Contact = () => {
         </p>
       </div>
 
-      <div className="contact-layout-grid mb-5">
+      <ScrollReveal className="contact-layout-grid mb-5">
         {/* Contact Info Sidebar */}
         <div className="white-card contact-info-card">
           <h3 className="card-title">Dammanakatte Range Office</h3>
@@ -152,12 +153,11 @@ const Contact = () => {
 
             <div className="form-grid-2">
               <div className="form-group">
-                <label className="form-label">Contact Phone</label>
+                <label className="form-label">Phone Number (Optional)</label>
                 <input
                   type="tel"
                   name="phone"
-                  required
-                  placeholder="9876543210"
+                  placeholder="+91 98765 43210"
                   value={formData.phone}
                   onChange={handleChange}
                   className="modern-input"
@@ -165,7 +165,7 @@ const Contact = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Subject</label>
+                <label className="form-label">Inquiry Subject</label>
                 <select
                   name="subject"
                   value={formData.subject}
@@ -173,9 +173,10 @@ const Contact = () => {
                   className="modern-input"
                 >
                   <option value="Safari Booking Inquiry">Safari Booking Inquiry</option>
-                  <option value="Luxury Stay Booking">Luxury Stay Booking</option>
-                  <option value="Custom Photography Masterclass">Custom Photography Masterclass</option>
-                  <option value="Corporate / Group Tour">Corporate / Group Tour</option>
+                  <option value="Resort & Lodge Reservation">Resort & Lodge Reservation</option>
+                  <option value="Custom Tour Package">Custom Tour Package</option>
+                  <option value="Gate Permit Clearance Question">Gate Permit Clearance Question</option>
+                  <option value="Other Assistance">Other Assistance</option>
                 </select>
               </div>
             </div>
@@ -185,34 +186,36 @@ const Contact = () => {
               <textarea
                 name="message"
                 required
-                rows="4"
-                placeholder="Specify your preferred dates, number of travelers, or questions..."
+                rows={4}
+                placeholder="Let us know your travel dates, number of travelers, preferred safari zone..."
                 value={formData.message}
                 onChange={handleChange}
                 className="modern-input"
+                style={{ resize: 'vertical' }}
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full btn-lg"
+              className="btn-primary w-full"
+              style={{ width: '100%' }}
             >
               <span>{loading ? 'Sending Message...' : 'Submit Inquiry'}</span>
               <Send size={18} />
             </button>
           </form>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Frequently Asked Questions */}
-      <div className="faq-section mt-5">
+      <ScrollReveal className="faq-section mt-5">
         <div className="section-header text-left mb-4">
           <span className="section-eyebrow gold">FREQUENT QUESTIONS</span>
           <h2 className="section-title">Permit & Expedition Guidelines</h2>
         </div>
 
-        <div className="faq-list">
+        <div className="faq-list stagger-group">
           {faqs.map((faq, index) => (
             <div key={index} className="white-card faq-item">
               <button
@@ -233,7 +236,7 @@ const Contact = () => {
             </div>
           ))}
         </div>
-      </div>
+      </ScrollReveal>
 
       <style>{`
         .contact-layout-grid {

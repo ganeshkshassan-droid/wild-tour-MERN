@@ -8,7 +8,8 @@ exports.getStays = async (req, res) => {
     let query = { active: true };
 
     if (search) {
-      query.name = { $regex: search, $options: 'i' };
+      const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      query.name = { $regex: escaped, $options: 'i' };
     }
 
     if (maxPrice) {

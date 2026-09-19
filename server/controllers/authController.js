@@ -682,12 +682,20 @@ exports.forgotPassword = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     // Send OTP email
-    await sendOtpEmail({
-      to: user.email,
-      name: user.name,
-      otp: rawOtp,
-      purpose: 'Password Reset',
-    });
+    try {
+      await sendOtpEmail({
+        to: user.email,
+        name: user.name,
+        otp: rawOtp,
+        purpose: 'Password Reset',
+      });
+    } catch (emailErr) {
+      console.error('[Forgot Password Email Dispatch Error]:', emailErr.message);
+      return res.status(500).json({
+        success: false,
+        message: `Failed to deliver verification code: ${emailErr.message}. Please check your email configuration.`,
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -884,12 +892,20 @@ exports.resendOtp = async (req, res) => {
     user.lastOtpSentAt = new Date();
     await user.save({ validateBeforeSave: false });
 
-    await sendOtpEmail({
-      to: user.email,
-      name: user.name,
-      otp: rawOtp,
-      purpose: 'Password Reset',
-    });
+    try {
+      await sendOtpEmail({
+        to: user.email,
+        name: user.name,
+        otp: rawOtp,
+        purpose: 'Password Reset',
+      });
+    } catch (emailErr) {
+      console.error('[Resend OTP Email Error]:', emailErr.message);
+      return res.status(500).json({
+        success: false,
+        message: `Failed to dispatch OTP: ${emailErr.message}. Please verify your email credentials.`,
+      });
+    }
 
     res.status(200).json({
       success: true,

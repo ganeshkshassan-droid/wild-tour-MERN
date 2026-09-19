@@ -2,22 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import WildlifeCard from '../components/WildlifeCard';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ScrollReveal from '../components/ScrollReveal';
 import {
   TreePine,
-  Volume2,
   Camera,
   MapPin,
   Clock,
   Activity,
   ChevronRight
 } from 'lucide-react';
-import { useToast } from '../context/ToastContext';
 
 const WildlifeSightings = () => {
   const [speciesList, setSpeciesList] = useState([]);
   const [activeSpecies, setActiveSpecies] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { showToast } = useToast();
 
   useEffect(() => {
     fetchWildlife();
@@ -37,10 +35,6 @@ const WildlifeSightings = () => {
     }
   };
 
-  const handleSimulateSound = (soundName) => {
-    showToast(`🔊 Sound Simulation: "${soundName}"`, 'info');
-  };
-
   return (
     <div className="wildlife-page container section-padding">
       <div className="section-header text-left mb-5">
@@ -57,7 +51,7 @@ const WildlifeSightings = () => {
       {loading ? (
         <SkeletonLoader count={3} />
       ) : activeSpecies ? (
-        <div className="wildlife-spotlight-layout mb-5">
+        <ScrollReveal className="wildlife-spotlight-layout mb-5">
           {/* Left Species Directory Sidebar */}
           <div className="white-card species-sidebar">
             <h3 className="sidebar-title">Species Directory</h3>
@@ -68,11 +62,19 @@ const WildlifeSightings = () => {
                   onClick={() => setActiveSpecies(item)}
                   className={`species-nav-btn ${(activeSpecies._id === item._id || activeSpecies.slug === item.slug) ? 'active' : ''}`}
                 >
-                  <img
-                    src={item.image || item.image_url}
-                    alt={item.name}
-                    className="species-nav-thumb"
-                  />
+                  <div className="species-nav-thumb-wrap">
+                    <img
+                      src={item.image || item.image_url}
+                      alt=""
+                      aria-hidden="true"
+                      className="species-nav-thumb-backdrop"
+                    />
+                    <img
+                      src={item.image || item.image_url}
+                      alt={item.name}
+                      className="species-nav-thumb"
+                    />
+                  </div>
                   <div className="species-nav-text">
                     <span className="species-name">{item.name}</span>
                     <span className="species-status">{item.status || 'Protected'}</span>
@@ -88,20 +90,18 @@ const WildlifeSightings = () => {
             <div className="spotlight-media-wrap">
               <img
                 src={activeSpecies.image || activeSpecies.image_url}
+                alt=""
+                aria-hidden="true"
+                className="spotlight-backdrop-blur"
+              />
+              <img
+                src={activeSpecies.image || activeSpecies.image_url}
                 alt={activeSpecies.name}
                 className="spotlight-img"
               />
               <div className="spotlight-overlay-tags">
                 <span className="badge badge-forest">{activeSpecies.status || 'Protected Species'}</span>
-                {(activeSpecies.sound || activeSpecies.sound_name) && (
-                  <button
-                    onClick={() => handleSimulateSound(activeSpecies.sound || activeSpecies.sound_name)}
-                    className="btn-primary btn-sm bg-white text-forest-primary"
-                  >
-                    <Volume2 size={15} />
-                    <span>Play Alarm Call</span>
-                  </button>
-                )}
+                <span className="badge badge-gold font-bold">Full Wildlife View</span>
               </div>
             </div>
 
@@ -127,8 +127,8 @@ const WildlifeSightings = () => {
                 <div className="intel-box">
                   <MapPin size={18} className="text-forest-primary" />
                   <div>
-                    <span className="intel-label">Primary Habitat Hotspot</span>
-                    <span className="intel-val">{activeSpecies.habitat || activeSpecies.hotspot || 'Dammanakatte Zone A & B'}</span>
+                    <span className="intel-label">Primary Habitat</span>
+                    <span className="intel-val">{activeSpecies.primaryZone || activeSpecies.primary_zone || 'Dammanakatte Zone A/B'}</span>
                   </div>
                 </div>
 
@@ -150,12 +150,12 @@ const WildlifeSightings = () => {
               </div>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       ) : null}
 
       {/* Grid of All Cards */}
       <h3 className="section-title text-xl text-left mb-4">All Resident Species</h3>
-      <div className="cards-grid">
+      <ScrollReveal className="cards-grid stagger-group">
         {speciesList.map((animal) => (
           <WildlifeCard
             key={animal._id || animal.id}
@@ -164,10 +164,9 @@ const WildlifeSightings = () => {
               setActiveSpecies(a);
               window.scrollTo({ top: 180, behavior: 'smooth' });
             }}
-            onPlaySound={handleSimulateSound}
           />
         ))}
-      </div>
+      </ScrollReveal>
 
       <style>{`
         .wildlife-spotlight-layout {
@@ -204,11 +203,33 @@ const WildlifeSightings = () => {
           background-color: var(--forest-subtle);
           border-color: var(--forest-primary);
         }
-        .species-nav-thumb {
-          width: 44px;
-          height: 44px;
+        .species-nav-thumb-wrap {
+          width: 48px;
+          height: 48px;
           border-radius: var(--radius-xs);
+          position: relative;
+          overflow: hidden;
+          background: #071911;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .species-nav-thumb-backdrop {
+          position: absolute;
+          inset: -6px;
+          width: calc(100% + 12px);
+          height: calc(100% + 12px);
           object-fit: cover;
+          filter: blur(8px) brightness(0.4);
+          pointer-events: none;
+        }
+        .species-nav-thumb {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
         .species-nav-text {
           flex: 1;
@@ -230,21 +251,45 @@ const WildlifeSightings = () => {
         .spotlight-media-wrap {
           position: relative;
           width: 100%;
-          height: 380px;
+          height: 520px;
+          background: #071911;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .spotlight-backdrop-blur {
+          position: absolute;
+          inset: -25px;
+          width: calc(100% + 50px);
+          height: calc(100% + 50px);
+          object-fit: cover;
+          filter: blur(25px) brightness(0.35);
+          transform: scale(1.1);
+          pointer-events: none;
         }
         .spotlight-img {
+          position: relative;
+          z-index: 1;
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
+          object-position: center;
+          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .species-spotlight-box:hover .spotlight-img {
+          transform: scale(1.02);
         }
         .spotlight-overlay-tags {
           position: absolute;
           bottom: 16px;
           left: 16px;
           right: 16px;
+          z-index: 2;
           display: flex;
           justify-content: space-between;
           align-items: center;
+          pointer-events: none;
         }
         .spotlight-body {
           padding: 2.2rem;

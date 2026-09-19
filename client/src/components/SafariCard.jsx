@@ -14,7 +14,7 @@ const SafariCard = ({ safari, onBook }) => {
     <div className="white-card safari-card">
       <div className="card-media-wrap">
         <img
-          src={safari.image_url || safari.image || '/images/jeep-safari-lion.jpg'}
+          src={safari.image_url || safari.image || '/images/tiger.jpg'}
           alt={safari.name}
           className="card-media-img"
           loading="lazy"

@@ -10,26 +10,38 @@ const getTransporter = () => {
 
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = Number(process.env.SMTP_PORT) || 587;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
+  // Automatically strip all spaces if user pasted Google 16-character app password with spaces
+  const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '').trim() : '';
 
   if (user && pass) {
-    transporterInstance = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465, // false for port 587
-      requireTLS: port === 587,
-      auth: {
-        user,
-        pass,
-      },
-      tls: {
-        rejectUnauthorized: true,
-      },
-      pool: true,
-      maxConnections: 5,
-      maxMessages: 100,
-    });
+    const isGmail = host.toLowerCase().includes('gmail');
+    const transportOptions = isGmail
+      ? {
+          service: 'gmail',
+          auth: {
+            user,
+            pass,
+          },
+          tls: {
+            rejectUnauthorized: false,
+          },
+        }
+      : {
+          host,
+          port,
+          secure: port === 465,
+          requireTLS: port === 587,
+          auth: {
+            user,
+            pass,
+          },
+          tls: {
+            rejectUnauthorized: false,
+          },
+        };
+
+    transporterInstance = nodemailer.createTransport(transportOptions);
   }
 
   return transporterInstance;
@@ -65,7 +77,8 @@ exports.verifyEmailTransporter = async () => {
  */
 exports.sendVerificationEmail = async ({ to, name, token, otp }) => {
   const transporter = getTransporter();
-  const fromEmail = process.env.EMAIL_FROM || process.env.SMTP_USER || '"Wild Tour Karnataka" <verify@wildtour.com>';
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
+  const fromEmail = process.env.EMAIL_FROM || (user ? `"Wild Tour Karnataka" <${user}>` : '"Wild Tour Karnataka" <verify@wildtour.com>');
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   const verificationLink = `${frontendUrl}/verify-email?token=${token}`;
 
@@ -179,7 +192,8 @@ exports.sendVerificationEmail = async ({ to, name, token, otp }) => {
  */
 exports.sendOtpEmail = async ({ to, name, otp, purpose = 'Password Reset' }) => {
   const transporter = getTransporter();
-  const fromEmail = process.env.EMAIL_FROM || process.env.SMTP_USER || '"Wild Tour Karnataka" <security@wildtour.com>';
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
+  const fromEmail = process.env.EMAIL_FROM || (user ? `"Wild Tour Karnataka" <${user}>` : '"Wild Tour Karnataka" <security@wildtour.com>');
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -266,7 +280,8 @@ exports.sendOtpEmail = async ({ to, name, otp, purpose = 'Password Reset' }) => 
  */
 exports.sendWelcomeEmail = async ({ to, name }) => {
   const transporter = getTransporter();
-  const fromEmail = process.env.EMAIL_FROM || process.env.SMTP_USER || '"Wild Tour Karnataka" <welcome@wildtour.com>';
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
+  const fromEmail = process.env.EMAIL_FROM || (user ? `"Wild Tour Karnataka" <${user}>` : '"Wild Tour Karnataka" <welcome@wildtour.com>');
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -353,7 +368,8 @@ exports.sendWelcomeEmail = async ({ to, name }) => {
  */
 exports.sendBookingConfirmationEmail = async ({ to, booking, user }) => {
   const transporter = getTransporter();
-  const fromEmail = process.env.EMAIL_FROM || process.env.SMTP_USER || '"Wild Tour Karnataka" <bookings@wildtour.com>';
+  const emailUser = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : '';
+  const fromEmail = process.env.EMAIL_FROM || (emailUser ? `"Wild Tour Karnataka" <${emailUser}>` : '"Wild Tour Karnataka" <bookings@wildtour.com>');
 
   const formattedDate = booking.booking_date
     ? new Date(booking.booking_date).toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })

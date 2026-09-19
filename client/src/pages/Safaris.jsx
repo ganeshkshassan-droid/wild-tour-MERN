@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import BookingModal from '../components/BookingModal';
 import SafariCard from '../components/SafariCard';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ScrollReveal from '../components/ScrollReveal';
 import { Search, Compass, Filter, Sparkles } from 'lucide-react';
 
 const Safaris = () => {
+  const navigate = useNavigate();
   const [safaris, setSafaris] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Booking Modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedSafari, setSelectedSafari] = useState(null);
 
   useEffect(() => {
     fetchSafaris();
@@ -33,8 +31,9 @@ const Safaris = () => {
   };
 
   const handleBook = (safari) => {
-    setSelectedSafari(safari);
-    setModalOpen(true);
+    navigate(`/booking/Safari/${safari._id || safari.id}`, {
+      state: { item: safari, itemType: 'Safari' },
+    });
   };
 
   const categories = ['All', 'Jeep', 'Boat', 'Night', 'Elephant'];
@@ -71,7 +70,7 @@ const Safaris = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="discovery-filter-bar mb-5">
+      <ScrollReveal className="discovery-filter-bar mb-5">
         <div className="filter-categories-pills">
           {categories.map((cat) => (
             <button
@@ -94,7 +93,7 @@ const Safaris = () => {
             className="discovery-search-input"
           />
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Safari Cards Grid */}
       {loading ? (
@@ -106,7 +105,7 @@ const Safaris = () => {
           <p className="text-secondary">Try switching categories or clearing search keywords.</p>
         </div>
       ) : (
-        <div className="cards-grid">
+        <ScrollReveal className="cards-grid stagger-group">
           {filteredSafaris.map((safari) => (
             <SafariCard
               key={safari._id || safari.id}
@@ -114,16 +113,8 @@ const Safaris = () => {
               onBook={handleBook}
             />
           ))}
-        </div>
+        </ScrollReveal>
       )}
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        item={selectedSafari}
-        itemType="Safari"
-      />
 
       <style>{`
         .discovery-filter-bar {

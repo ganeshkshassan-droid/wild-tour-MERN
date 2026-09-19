@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import BookingModal from '../components/BookingModal';
 import StayCard from '../components/StayCard';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ScrollReveal from '../components/ScrollReveal';
 import { Hotel, Search, SlidersHorizontal, MapPin } from 'lucide-react';
 
 const Stays = () => {
+  const navigate = useNavigate();
   const [stays, setStays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [maxPrice, setMaxPrice] = useState(25000);
-
-  // Booking Modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedStay, setSelectedStay] = useState(null);
 
   useEffect(() => {
     fetchStays();
@@ -33,8 +31,9 @@ const Stays = () => {
   };
 
   const handleBook = (stay) => {
-    setSelectedStay(stay);
-    setModalOpen(true);
+    navigate(`/booking/Stay/${stay._id || stay.id}`, {
+      state: { item: stay, itemType: 'Stay' },
+    });
   };
 
   const filteredStays = stays.filter((stay) => {
@@ -61,7 +60,7 @@ const Stays = () => {
       </div>
 
       {/* Filter and Price Slider Bar */}
-      <div className="discovery-filter-bar mb-5">
+      <ScrollReveal className="discovery-filter-bar mb-5">
         <div className="discovery-search-wrap">
           <Search size={18} className="search-input-icon text-muted" />
           <input
@@ -86,7 +85,7 @@ const Stays = () => {
             className="tariff-range-slider"
           />
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Stays Grid */}
       {loading ? (
@@ -98,7 +97,7 @@ const Stays = () => {
           <p className="text-secondary">Try adjusting the price slider or clearing search terms.</p>
         </div>
       ) : (
-        <div className="cards-grid">
+        <ScrollReveal className="cards-grid stagger-group">
           {filteredStays.map((stay) => (
             <StayCard
               key={stay._id || stay.id}
@@ -106,16 +105,8 @@ const Stays = () => {
               onBook={handleBook}
             />
           ))}
-        </div>
+        </ScrollReveal>
       )}
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        item={selectedStay}
-        itemType="Stay"
-      />
 
       <style>{`
         .discovery-filter-bar {

@@ -119,8 +119,8 @@ const seedDatabase = async () => {
     console.log('Seeding Safaris (Distinct Names, Prices, and Images)...');
     const safaris = await Safari.insertMany([
       {
-        name: '4x4 Predator Lion & Big Cat Gypsy Safari',
-        image_url: '/images/jeep-safari-lion.jpg',
+        name: '4x4 Royal Bengal Tiger & Predator Gypsy Safari',
+        image_url: '/images/tiger.jpg',
         price_per_seat: 1850,
         description: 'Thrilling open-top 4x4 off-road jungle expedition deep into core predator territories, alarm call tracks, and elephant crossings.',
         duration: '3.5 Hours',

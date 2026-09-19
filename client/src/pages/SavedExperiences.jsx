@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
-import BookingModal from '../components/BookingModal';
 import SkeletonLoader from '../components/SkeletonLoader';
 import {
   Heart,
@@ -21,16 +20,12 @@ import {
 } from 'lucide-react';
 
 const SavedExperiences = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { wishlistItems, loading, removeFromWishlist, toggleWishlist } = useWishlist();
 
   const [activeTab, setActiveTab] = useState('All'); // 'All' | 'Safari' | 'Stay' | 'Package'
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Booking Modal State
-  const [bookingModalOpen, setBookingModalOpen] = useState(false);
-  const [selectedItemForBooking, setSelectedItemForBooking] = useState(null);
-  const [selectedItemType, setSelectedItemType] = useState('Safari');
 
   // Category counts
   const counts = useMemo(() => {
@@ -66,9 +61,10 @@ const SavedExperiences = () => {
   }, [wishlistItems, activeTab, searchQuery]);
 
   const handleBookItem = (item, itemType) => {
-    setSelectedItemForBooking(item);
-    setSelectedItemType(itemType || 'Safari');
-    setBookingModalOpen(true);
+    const type = itemType || 'Safari';
+    navigate(`/booking/${type}/${item._id || item.id}`, {
+      state: { item, itemType: type },
+    });
   };
 
   if (!user) {
@@ -379,19 +375,6 @@ const SavedExperiences = () => {
         )}
 
       </div>
-
-      {/* Reusable Booking Modal */}
-      {selectedItemForBooking && (
-        <BookingModal
-          isOpen={bookingModalOpen}
-          onClose={() => {
-            setBookingModalOpen(false);
-            setSelectedItemForBooking(null);
-          }}
-          item={selectedItemForBooking}
-          itemType={selectedItemType}
-        />
-      )}
 
       <style>{`
         .saved-page-root {

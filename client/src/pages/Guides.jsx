@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import BookingModal from '../components/BookingModal';
 import GuideCard from '../components/GuideCard';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ScrollReveal from '../components/ScrollReveal';
 import { Award, ShieldCheck, Languages, Compass } from 'lucide-react';
 
 const Guides = () => {
+  const navigate = useNavigate();
   const [guides, setGuides] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Booking Modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedGuide, setSelectedGuide] = useState(null);
 
   useEffect(() => {
     fetchGuides();
@@ -31,8 +29,9 @@ const Guides = () => {
   };
 
   const handleBook = (guide) => {
-    setSelectedGuide(guide);
-    setModalOpen(true);
+    navigate(`/booking/Guide/${guide._id || guide.id}`, {
+      state: { item: guide, itemType: 'Guide' },
+    });
   };
 
   return (
@@ -51,7 +50,7 @@ const Guides = () => {
       {loading ? (
         <SkeletonLoader count={3} />
       ) : (
-        <div className="cards-grid">
+        <ScrollReveal className="cards-grid stagger-group">
           {guides.map((guide) => (
             <GuideCard
               key={guide._id || guide.id}
@@ -59,16 +58,8 @@ const Guides = () => {
               onBook={handleBook}
             />
           ))}
-        </div>
+        </ScrollReveal>
       )}
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        item={selectedGuide}
-        itemType="Guide"
-      />
 
       <style>{`
         .cards-grid {

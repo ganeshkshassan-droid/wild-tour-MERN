@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollReveal from '../components/ScrollReveal';
 import { Camera, Sun, Aperture, Eye, Sparkles } from 'lucide-react';
 
 const PhotographyGuide = () => {
@@ -67,7 +68,7 @@ const PhotographyGuide = () => {
       </div>
 
       {/* 3 Pillar Cards */}
-      <div className="guide-pillars-grid mb-5">
+      <ScrollReveal className="guide-pillars-grid stagger-group mb-5">
         <div className="white-card pillar-card">
           <div className="pillar-icon"><Sun size={26} className="text-gold-primary" /></div>
           <h3 className="card-title">Golden Hour Timing</h3>
@@ -91,7 +92,7 @@ const PhotographyGuide = () => {
             Use beanbags instead of tripods on the open gypsy railing. Lowering your optical angle creates an intimate portrait with pleasing background blur.
           </p>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Gallery Section */}
       <div className="section-header text-left mt-5 mb-4">
@@ -99,7 +100,7 @@ const PhotographyGuide = () => {
         <h2 className="section-title">Captured in Nagarhole & Kabini</h2>
       </div>
 
-      <div className="photo-gallery-grid">
+      <ScrollReveal className="photo-gallery-grid stagger-group">
         {photoGallery.map((item, idx) => (
           <div key={idx} className="white-card gallery-photo-card">
             <div className="gallery-img-wrap">
@@ -112,7 +113,7 @@ const PhotographyGuide = () => {
             </div>
           </div>
         ))}
-      </div>
+      </ScrollReveal>
 
       <style>{`
         .guide-pillars-grid {

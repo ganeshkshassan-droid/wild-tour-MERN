@@ -12,7 +12,8 @@ exports.getSafaris = async (req, res) => {
     }
 
     if (search) {
-      query.name = { $regex: search, $options: 'i' };
+      const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      query.name = { $regex: escaped, $options: 'i' };
     }
 
     const safaris = await Safari.find(query).sort({ price_per_seat: 1 });
