@@ -75,10 +75,10 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <AuthProvider>
-          <WishlistProvider>
-            <Router>
+      <Router>
+        <ToastProvider>
+          <AuthProvider>
+            <WishlistProvider>
               <ScrollToTop />
               <div className="app-layout">
                 <Navbar />
@@ -157,10 +157,10 @@ function App() {
                 </main>
                 <Footer />
               </div>
-            </Router>
-          </WishlistProvider>
-        </AuthProvider>
-      </ToastProvider>
+            </WishlistProvider>
+          </AuthProvider>
+        </ToastProvider>
+      </Router>
     </ErrorBoundary>
   );
 }

@@ -152,20 +152,32 @@ class ErrorBoundary extends Component {
               </button>
             </div>
 
-            {/* Developer Diagnostic Details (Only if error exists) */}
-            {import.meta.env.DEV && this.state.error && (
-              <div style={{
-                marginTop: '2rem',
+            {/* Diagnostic Details (Collapsible) */}
+            {this.state.error && (
+              <details style={{
+                marginTop: '1.8rem',
                 textAlign: 'left',
                 background: 'rgba(0,0,0,0.4)',
-                padding: '1rem',
+                padding: '0.75rem 1rem',
                 borderRadius: '8px',
-                fontSize: '0.75rem',
+                fontSize: '0.8rem',
                 color: '#fca5a5',
-                overflowX: 'auto'
+                cursor: 'pointer'
               }}>
-                <strong>Dev Diagnostic:</strong> {this.state.error.toString()}
-              </div>
+                <summary style={{ fontWeight: 600, color: '#f87171', outline: 'none' }}>
+                  Technical Details: {this.state.error.message || 'Error diagnostic'}
+                </summary>
+                <pre style={{
+                  marginTop: '0.75rem',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  fontSize: '0.75rem',
+                  lineHeight: 1.5,
+                  color: '#fecaca'
+                }}>
+                  {this.state.error.stack || this.state.error.toString()}
+                </pre>
+              </details>
             )}
           </div>
         </div>
