@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
+import StayCard from '../components/StayCard';
 import SkeletonLoader from '../components/SkeletonLoader';
 import ScrollReveal from '../components/ScrollReveal';
 import {
@@ -38,11 +39,6 @@ const Home = () => {
   const [searchDate, setSearchDate] = useState('');
   const [searchGuests, setSearchGuests] = useState('2');
 
-  // Booking Modal State
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedItemType, setSelectedItemType] = useState('Safari');
-
   // Horizontal Scroll Ref for Stays Shelf
   const staysScrollRef = useRef(null);
 
@@ -72,9 +68,10 @@ const Home = () => {
   };
 
   const handleOpenBooking = (item, type) => {
-    setSelectedItem(item);
-    setSelectedItemType(type);
-    setModalOpen(true);
+    const itemType = type || 'Stay';
+    navigate(`/booking/${itemType}/${item._id || item.id}`, {
+      state: { item, itemType },
+    });
   };
 
   const handleSearchSubmit = (e) => {
